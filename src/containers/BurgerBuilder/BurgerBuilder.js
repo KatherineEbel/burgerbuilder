@@ -4,6 +4,9 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import axios from '../../axios-orders';
 
 const INGREDIENT_PRICES = {
   lettuce: 0.3,
@@ -26,7 +29,8 @@ class BurgerBuilder extends Component {
     },
     totalPrice: 4,
     purchaseable: false,
-    isPurchasing: false
+    isPurchasing: false,
+    isLoading: false
   };
   
   render() {
@@ -36,17 +40,22 @@ class BurgerBuilder extends Component {
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] === 0
     }
+    
+    let orderSummary = (<OrderSummary
+      purchaseCanceled={ this.purchaseCancelHandler }
+      purchaseContinued={ this.purchaseContinueHandler }
+      ingredients={ this.state.ingredients }
+      price={ this.state.totalPrice }/>);
+    
+    if (this.state.isLoading) {
+      orderSummary = <Spinner/>;
+    }
     return (
       <Aux>
         <Modal
           modalClosed={ this.purchaseCancelHandler }
           show={ this.state.isPurchasing }>
-          <OrderSummary
-            purchaseCanceled={ this.purchaseCancelHandler }
-            purchaseContinued={ this.purchaseContinueHandler }
-            ingredients={ this.state.ingredients }
-            price={ this.state.totalPrice }
-          />
+          { orderSummary }
         </Modal>
         <Burger ingredients={ this.state.ingredients }/>
         <BuildControls
@@ -76,7 +85,28 @@ class BurgerBuilder extends Component {
   };
   
   purchaseContinueHandler = () => {
-    alert('You continue');
+    this.setState({ isLoading: true });
+    const { ingredients, totalPrice } = this.state;
+    const order = {
+      ingredients,
+      totalPrice,
+      customer: {
+        name: 'Katherine Ebel',
+        address: {
+          street: '123 Some Street',
+          zipCode: 90210,
+          country: 'USA'
+        },
+        email: 'test@test.com'
+      },
+      deliveryMethod: 'fastest'
+    };
+    axios.post('/orders', order)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(e => console.log(e))
+      .finally(() => this.setState({ loading: false, isPurchasing: false }));
   };
   
   addIngredientHandler = type => {
@@ -117,4 +147,4 @@ class BurgerBuilder extends Component {
   };
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);
