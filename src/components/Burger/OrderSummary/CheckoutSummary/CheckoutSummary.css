@@ -1,0 +1,11 @@
+.CheckoutSummary {
+    display: flex;
+    width: 100%;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.CheckoutSummary.Actions {
+    display: flex;
+    flex-flow: row nowrap;
+}
