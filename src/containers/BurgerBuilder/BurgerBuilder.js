@@ -7,7 +7,6 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
-import Checkout from '../Checkout/Checkout';
 
 const INGREDIENT_PRICES = {
   lettuce: 0.3,
@@ -78,7 +77,6 @@ class BurgerBuilder extends Component {
           { orderSummary }
         </Modal>
         { burger }
-        <Checkout/>
       </Aux>
     );
   }
@@ -98,28 +96,37 @@ class BurgerBuilder extends Component {
   };
   
   purchaseContinueHandler = () => {
-    this.setState({ isLoading: true });
-    const { ingredients, totalPrice } = this.state;
-    const order = {
-      ingredients,
-      totalPrice,
-      customer: {
-        name: 'Katherine Ebel',
-        address: {
-          street: '123 Some Street',
-          zipCode: 90210,
-          country: 'USA'
-        },
-        email: 'test@test.com'
-      },
-      deliveryMethod: 'fastest'
-    };
-    axios.post('/orders.json', order)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(e => console.log(e))
-      .finally(() => this.setState({ loading: false, isPurchasing: false }));
+    const queryParams = [];
+    for (let i in this.state.ingredients) {
+      queryParams.push(`${encodeURIComponent(i)}=${encodeURIComponent(this.state.ingredients[i])}`)
+    }
+    const queryString = queryParams.join('&');
+    this.props.history.push({
+      pathname: '/checkout',
+      search: queryString
+    });
+    // this.setState({ isLoading: true });
+    // const { ingredients, totalPrice } = this.state;
+    // const order = {
+    //   ingredients,
+    //   totalPrice,
+    //   customer: {
+    //     name: 'Katherine Ebel',
+    //     address: {
+    //       street: '123 Some Street',
+    //       zipCode: 90210,
+    //       country: 'USA'
+    //     },
+    //     email: 'test@test.com'
+    //   },
+    //   deliveryMethod: 'fastest'
+    // };
+    // axios.post('/orders.json', order)
+    //   .then(res => {
+    //     console.log(res);
+    //   })
+    //   .catch(e => console.log(e))
+    //   .finally(() => this.setState({ loading: false, isPurchasing: false }));
   };
   
   addIngredientHandler = type => {
