@@ -6,11 +6,13 @@ import axios from '../../../axios-orders';
 
 class ContactData extends Component {
   state = {
-    name: '',
-    email: '',
-    address: {
-      street: '',
-      zipCode: ''
+    customer: {
+      name: '',
+      email: '',
+      address: {
+        street: '',
+        zipCode: ''
+      }
     },
     loading: false
   };
@@ -44,10 +46,10 @@ class ContactData extends Component {
   orderHandler = (e) => {
     e.preventDefault();
     this.setState({ isLoading: true });
-    const { ingredients, price } = this.state;
+    const { ingredients, price } = this.props;
     const order = {
       ingredients,
-      price,
+      price: +price,
       customer: {
         name: 'Katherine Ebel',
         address: {
@@ -64,7 +66,7 @@ class ContactData extends Component {
       })
       .catch(e => console.log(e))
       .finally(() => {
-        this.setState({ loading: false })
+        this.setState({ loading: false });
         this.props.history.push('/');
       });
   };
