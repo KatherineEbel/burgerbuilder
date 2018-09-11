@@ -72,7 +72,7 @@ class BurgerBuilder extends Component {
   purchaseHandler = () => {
     this.setState({ isPurchasing: true })
   };
-  
+
   purchaseCancelHandler = () => {
     this.setState({ isPurchasing: false })
   };
@@ -87,6 +87,7 @@ const mapStateToProps = state => {
   return {
     ings: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
+    loading: state.burgerBuilder.loading,
     error: state.burgerBuilder.error
   }
 };
