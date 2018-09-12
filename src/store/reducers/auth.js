@@ -14,12 +14,13 @@ const reducer = (state = initialState, action) => {
     case actionTypes.AUTH_SUCCESS:
       const {idToken, userId} = action;
       return update(state, {
-        idToken, userId, error: null, loading: false
+        token: idToken, userId, error: null, loading: false
       });
     case actionTypes.AUTH_FAIL:
       const {error} = action;
       return update(state, { error, loading: false});
     default: return state;
+    case actionTypes.AUTH_LOGOUT: return update(state, { token: null, userId: null });
   }
 };
 
