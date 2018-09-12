@@ -8,5 +8,6 @@ export {
 } from './order';
 export {
   auth,
-  logout
+  logout,
+  setAuthRedirect
 } from './auth';
