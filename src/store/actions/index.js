@@ -5,4 +5,7 @@ export {
   fetchOrders,
   fetchOrdersStart,
   fetchOrdersFail
-} from './order'
+} from './order';
+export {
+  auth
+} from './auth';

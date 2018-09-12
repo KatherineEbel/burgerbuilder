@@ -6,24 +6,19 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import burgerBuilderReducer from './store/reducers/burgerBuilder';
 import orderReducer from './store/reducers/order';
+import authReducer from './store/reducers/auth';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-// const logger = store => {
-//   return next => {
-//     return action => {
-//       console.log('[Middleware] Dispatching', action);
-//       const result = next(action);
-//       console.log('[Middleware] next state', store.getState());
-//       return result;
-//     }
-//   };
-// };
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const rootReducer = combineReducers({
   burgerBuilder: burgerBuilderReducer,
-  order: orderReducer
+  order: orderReducer,
+  auth: authReducer
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
