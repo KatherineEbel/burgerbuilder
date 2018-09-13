@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { update } from '../utility';
+import { update } from '../../shared/utility';
 
 const initialState = {
   ingredients: null,
@@ -49,7 +49,8 @@ const setIngredients = (state, action) => {
       cheese: action.ingredients.cheese,
       meat: action.ingredients.meat,
     },
-    building: false
+    building: false,
+    price: 4
   });
 };
 
