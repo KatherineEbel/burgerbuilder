@@ -7,6 +7,7 @@ import classes from './ContactData.css';
 import axios from '../../../axios-orders';
 import * as actions from '../../../store/actions'
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import { update, checkIsValid } from '../../../shared/utility';
 
 class ContactData extends Component {
   state = {
@@ -79,33 +80,22 @@ class ContactData extends Component {
     isValid: false
   };
   
-  checkIsValid(value, rules) {
-    let isValid = true;
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-    
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-    if (rules.maxLength) {
-      isValid = value.length <= rules.minLength && isValid;
-    }
-    return isValid;
-  }
   
   inputChangedHandler = (inputIdentifier, event) => {
     const orderForm = {...this.state.orderForm};
-    const elConfigCopy = {...orderForm[inputIdentifier]};
-    elConfigCopy.value = event.target.value;
-    elConfigCopy.valid = this.checkIsValid(elConfigCopy.value, elConfigCopy.validation);
-    elConfigCopy.touched = true;
-    orderForm[inputIdentifier] = elConfigCopy;
-    const isValid = Object.keys(orderForm).reduce((isValid, key) => {
-      isValid = orderForm[key].valid && isValid;
+    const updatedFormEl = update(orderForm[inputIdentifier], {
+      value: event.target.value,
+      valid: checkIsValid(event.target.value, orderForm[inputIdentifier].validation),
+      touched: true
+    });
+    const updatedOrderForm = update(orderForm, {
+      [inputIdentifier]: updatedFormEl
+    });
+    const isValid = Object.keys(updatedOrderForm).reduce((isValid, key) => {
+      isValid = updatedOrderForm[key].valid && isValid;
       return isValid;
     }, true);
-    this.setState({orderForm, isValid})
+    this.setState({orderForm: updatedOrderForm, isValid})
   };
   
   render() {
